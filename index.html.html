@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Âm Sắc Việt — Nhạc cụ truyền thống</title>
+<style>
+:root{
+  --bg:#f6f0e4; --paper:#fffaf0; --ink:#2d2118; --muted:#776653;
+  --wood:#8b4e2f; --gold:#d6a94f; --red:#9f3d2f; --green:#315b48;
+  --shadow:0 14px 40px rgba(68,44,23,.12); --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:
+radial-gradient(circle at 15% 0%,#fff8df 0 15%,transparent 35%),
+linear-gradient(135deg,#f7f0e4,#eee3d0);min-height:100vh}
+button{font:inherit}
+.app{max-width:1180px;margin:auto;padding:18px 18px 120px}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 4px 12px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(145deg,var(--red),#c76b3b);display:grid;place-items:center;color:#fff;font-size:28px;box-shadow:var(--shadow)}
+h1{font-family:Georgia,serif;margin:0;font-size:clamp(27px,4vw,44px)}
+.subtitle{margin:3px 0 0;color:var(--muted)}
+.volume{display:flex;align-items:center;gap:8px;background:#fff8;border:1px solid #d9cbb6;padding:9px 12px;border-radius:999px}
+.volume input{width:100px;accent-color:var(--red)}
+.card{background:#fffaf0e8;border:1px solid #dfd0b9;border-radius:var(--radius);box-shadow:var(--shadow)}
+.info{padding:24px;margin-top:8px;display:grid;grid-template-columns:1.25fr .75fr;gap:20px}
+.kicker{color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:12px}
+.info h2{font-family:Georgia,serif;font-size:34px;margin:6px 0 10px}
+.info p{line-height:1.65;margin:0;color:#5e5041}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.tag{padding:7px 10px;border-radius:999px;background:#eee2cd;color:#634c36;font-size:13px;font-weight:700}
+.tip{padding:18px;border-radius:18px;background:#f1e5d1;border:1px dashed #c9b28f;align-self:stretch}
+.tip strong{display:block;margin-bottom:6px}
+.selector{margin:18px 0 14px;display:flex;gap:10px;overflow:auto;padding:4px;scrollbar-width:thin}
+.selector button{white-space:nowrap;border:1px solid #d8c7ae;background:#fff9ef;color:#5a4634;padding:11px 15px;border-radius:999px;font-weight:800;cursor:pointer;transition:.18s}
+.selector button:hover{transform:translateY(-1px)}
+.selector button.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 8px 18px #9f3d2f33}
+.instrument-card{padding:14px;margin-top:0}
+.stage{height:420px;border-radius:20px;background:
+linear-gradient(90deg,#eadcc5 1px,transparent 1px) 0 0/38px 38px,
+linear-gradient(#eadcc5 1px,transparent 1px) 0 0/38px 38px,
+#f8f1e5;display:grid;place-items:center;overflow:hidden;position:relative}
+.stage:after{content:"NHÌN TỪ TRÊN XUỐNG";position:absolute;top:12px;right:14px;font-size:10px;font-weight:900;letter-spacing:.1em;color:#8d795e;background:#fff8;padding:6px 8px;border-radius:999px}
+.instrument-art{width:min(94%,900px);height:94%;display:grid;place-items:center}
+.instrument-art svg{width:100%;height:100%;filter:drop-shadow(0 18px 16px rgba(75,43,20,.18))}
+.instrument-caption{text-align:center;padding:12px 8px 4px;color:var(--muted);font-size:13px}
+.keys{display:grid;grid-template-columns:repeat(8,1fr);gap:9px;padding:14px 4px 4px}
+.key{min-height:82px;border:1px solid #d4bea0;border-radius:16px;background:linear-gradient(#fffaf1,#e9dac3);box-shadow:0 6px 0 #c9b18f,0 9px 16px #5c3e2020;cursor:pointer;touch-action:manipulation;user-select:none;position:relative;transition:transform .06s,box-shadow .06s}
+.key:active,.key.down{transform:translateY(5px);box-shadow:0 1px 0 #c9b18f,0 4px 8px #5c3e2020}
+.key .num{display:block;font-size:22px;font-weight:900;color:var(--red)}
+.key .note{font-weight:800;color:#4f3d2d}
+.key .kbd{position:absolute;bottom:7px;right:9px;font-size:10px;color:#947e65}
+.mini-link{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:20;border:0;border-radius:999px;background:var(--green);color:#fff;padding:14px 24px;font-weight:900;box-shadow:0 12px 28px #315b4840;cursor:pointer}
+.mini{display:none;margin-top:22px;padding:24px}
+.mini.open{display:block}
+.mini-head{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+.mini h2{font-family:Georgia,serif;margin:0;font-size:30px}
+.primary{border:0;background:var(--red);color:#fff;border-radius:13px;padding:12px 17px;font-weight:900;cursor:pointer}
+.secondary{border:1px solid #cdb99d;background:#fff8ed;color:#5c4732;border-radius:13px;padding:11px 15px;font-weight:800;cursor:pointer}
+.game-stage{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.game-art,.game-panel{border-radius:18px;background:#f5ead8;border:1px solid #dfcdb2;min-height:310px;padding:14px}
+.game-art{display:grid;place-items:center}
+.game-art svg{width:100%;height:280px}
+.sequence{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.seqbox{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:#fff9ef;border:2px solid #dac6a8;font-weight:900;font-size:19px}
+.seqbox.current{border-color:var(--red);background:#ffe8de;box-shadow:0 0 0 4px #9f3d2f18}
+.seqbox.correct{border-color:#43815f;background:#e5f2e9}
+.seqbox.wrong{border-color:#b34a40;background:#f8dfdc}
+.game-status{min-height:52px;line-height:1.55;color:#5e5041}
+.game-keys{grid-template-columns:repeat(5,1fr);margin-top:12px}
+.game-keys .key{min-height:70px}
+.result{display:none;text-align:center;margin-top:15px;padding:20px;border-radius:18px;background:#fff7e7;border:1px solid #ddc69d}
+.result.show{display:block}
+.score{font-size:44px;font-weight:1000;color:var(--red)}
+.footer{text-align:center;color:#88745c;margin-top:26px;font-size:12px}
+@media(max-width:760px){
+ .hero{align-items:flex-start}.volume{display:none}
+ .info{grid-template-columns:1fr;padding:18px}.info h2{font-size:28px}
+ .stage{height:300px}.keys{grid-template-columns:repeat(4,1fr)}
+ .key{min-height:72px}.game-stage{grid-template-columns:1fr}.game-keys{grid-template-columns:repeat(5,1fr)}
+}
+@media(max-width:460px){
+ .app{padding-left:10px;padding-right:10px}.keys{gap:7px}.key{padding:7px 2px}
+ .key .kbd{display:none}.stage{height:260px}
+}
+
+.learning-hub{margin-top:20px}.learning-actions{display:grid;grid-template-columns:1fr 1fr;gap:14px}.learning-toggle{min-height:72px;border:1px solid #d8c7ae;border-radius:18px;background:linear-gradient(135deg,#fffaf0,#f1e4cf);color:#4f3b29;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 8px 18px #5c3e2014;transition:.18s}.learning-toggle:hover{transform:translateY(-2px);border-color:#c39c65}.learning-toggle.open{background:var(--red);border-color:var(--red);color:#fff}.learning-panel{padding:22px;margin-top:14px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.learning-panel h2{font-family:Georgia,serif;margin:5px 0 8px}.learning-panel p{color:var(--muted);line-height:1.55;margin:0}.learning-panel ol{margin:16px 0 0;padding-left:22px}.learning-panel li{margin:11px 0;line-height:1.55}.song{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #e4d5bf}.song:last-child{border-bottom:0}.song-info{min-width:0}.song-title{font-weight:900;color:#4d3929}.song-note{margin-top:5px;color:#776653;font-size:13px;line-height:1.5}.song button{border:0;background:var(--green);color:#fff;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;white-space:nowrap}.now-playing{margin-top:12px;padding:11px;border-radius:12px;background:#f1e5d1;color:#5d4935;font-weight:700}@media(max-width:760px){.learning-actions{grid-template-columns:1fr}.panel-head{flex-direction:column}.song{align-items:flex-start;flex-direction:column}.song button{width:100%}}
+
+.credit{font-size:11px;letter-spacing:.08em;color:#8a7865;text-align:center;margin:-2px 0 7px;font-weight:600}
+/* Bố cục ngang: thanh điều hướng bên cạnh khu vực chơi */
+.workspace{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start;margin-top:10px}.side-nav{grid-column:1;position:sticky;top:16px;padding:16px}.main-content{grid-column:2;min-width:0}.side-title{font-family:Georgia,serif;font-weight:900;font-size:19px;padding:6px 6px 14px}.side-label{font-size:10px;letter-spacing:.12em;font-weight:900;color:#8b7358;padding:8px 6px 6px}.side-nav .selector{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;max-height:330px;overflow:auto}.side-nav .selector button{width:100%;text-align:left;border-radius:12px;padding:10px 11px;font-size:13px}.side-nav .selector button.active{box-shadow:none}.side-nav .learning-toggle{width:100%;min-height:62px;margin-top:7px;padding:10px 12px;text-align:left;border:1px solid #d8c7ae;border-radius:13px;background:#fff9ef;color:#4f3b29;font-weight:900;font-size:14px;line-height:1.25;cursor:pointer}.side-nav .learning-toggle span{font-size:12px;font-weight:700;color:#7a6651}.side-nav .learning-toggle.open{background:var(--red);border-color:var(--red);color:#fff}.side-nav .learning-toggle.open span{color:#fff}.mini-side{width:100%;margin-top:10px;border:0;border-radius:13px;background:var(--green);color:#fff;padding:13px 12px;font-weight:900;cursor:pointer;box-shadow:0 8px 18px #315b4828}.main-content>.info{margin-top:0}.main-content>.instrument-card{margin-top:14px}.learning-hub{margin-top:14px}.learning-actions{display:none}.learning-panel{margin-top:0}.mini{margin-top:14px}.mini-link{display:none}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.side-nav{grid-column:1;position:relative;top:auto}.main-content{grid-column:1}.side-nav .selector{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden}.side-nav .selector button{width:auto;min-width:max-content}.side-nav .learning-toggle{width:calc(50% - 5px);display:inline-block;vertical-align:top;margin-right:5px}.mini-side{width:calc(50% - 5px);display:inline-block;margin-left:5px}.side-label{display:inline-block;margin-top:4px}.stage{height:360px}}
+@media(max-width:600px){.side-nav .learning-toggle,.mini-side{width:100%;margin:6px 0}.stage{height:290px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="credit">by THPT Nguyen Du- Ninh Son 12B9</div>
+    <div class="brand"><div class="logo">♫</div><div><h1>Âm Sắc Việt</h1><p class="subtitle">Khám phá và chơi nhạc cụ truyền thống Việt Nam</p></div></div>
+    <label class="volume">Âm lượng <input id="volume" type="range" min="0" max="0.30" step=".01" value=".15"></label>
+  </header>
+
+  <div class="workspace">
+    <aside class="side-nav card" aria-label="Điều hướng">
+      <div class="side-title">🎵 Khu luyện tập</div>
+      <div class="side-label">NHẠC CỤ</div>
+      <nav class="selector" id="selector" aria-label="Chọn nhạc cụ"></nav>
+      <div class="side-label">HỌC & CHƠI</div>
+      <button class="learning-toggle" id="guideToggle" type="button" aria-expanded="false" aria-controls="guide">📖 Mục 1<br><span>Hướng dẫn cách chơi</span></button>
+      <button class="learning-toggle" id="songsToggle" type="button" aria-expanded="false" aria-controls="songs">🎼 Mục 2<br><span>5 bài cho người mới</span></button>
+      <button class="mini-side" id="miniLink" type="button">🎮 Mini-game</button>
+    </aside>
+
+    <main class="main-content">
+      <section class="card info" id="info">
+        <div>
+          <div class="kicker">Nhạc cụ đang chọn</div>
+          <h2 id="title"></h2>
+          <p id="description"></p>
+          <div class="tags" id="tags"></div>
+        </div>
+        <div class="tip"><strong>🎧 Cách chơi</strong><span id="how"></span><br><br><span>Nhấn bằng chuột, chạm trên điện thoại hoặc dùng các phím <b>1–8</b>.</span></div>
+      </section>
+
+      <section class="card instrument-card">
+        <div class="stage"><div class="instrument-art" id="art"></div></div>
+        <div class="instrument-caption" id="caption"></div>
+        <div class="keys" id="keys"></div>
+      </section>
+
+      <section class="learning-hub" aria-label="Học và luyện tập">
+        <section class="card learning-panel" id="guide" hidden>
+          <div class="panel-head"><div><div class="kicker">Mục 1</div><h2>📖 Hướng dẫn cách chơi</h2><p id="guideIntro">Hướng dẫn thay đổi theo nhạc cụ đang chọn.</p></div><button class="secondary close-learning" data-close="guide" type="button">Đóng</button></div>
+          <ol id="guideList"></ol>
+        </section>
+        <section class="card learning-panel" id="songs" hidden>
+          <div class="panel-head"><div><div class="kicker">Mục 2</div><h2>🎼 5 bài nhạc cho người mới</h2><p>Chọn bài, xem chuỗi nốt rồi bấm “▶ Nghe thử”. Các bản dưới đây là phiên bản rút gọn để luyện từng nốt.</p></div><button class="secondary close-learning" data-close="songs" type="button">Đóng</button></div>
+          <div id="songList"></div><div class="now-playing" id="nowPlaying" aria-live="polite">Chưa phát bài mẫu.</div>
+        </section>
+      </section>
+
+      <section class="card mini" id="mini">
+        <div class="mini-head">
+          <div><div class="kicker">Thử thách</div><h2>Mini-game • Nghe & chọn nốt</h2></div>
+          <div><button class="primary" id="startGame">▶ Chơi lượt mới</button> <button class="secondary" id="closeMini">Đóng</button></div>
+        </div>
+        <div class="game-stage">
+          <div class="game-art" id="gameArt"></div>
+          <div class="game-panel">
+            <b id="gameInstrument"></b>
+            <p class="game-status" id="gameStatus">Nhấn “Chơi lượt mới”. Nhạc cụ sẽ được chọn ngẫu nhiên.</p>
+            <div class="sequence" id="sequence"></div>
+            <div class="keys game-keys" id="gameKeys"></div>
+            <div class="result" id="result"><div>Hoàn thành!</div><div class="score" id="score">0/10</div><div id="resultText"></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="footer">Âm thanh được tạo bằng Web Audio API với đặc tính mô phỏng riêng cho từng nhạc cụ • Không thay thế bản thu âm của nhạc cụ thật.</div>
+</div>
+
+
+<script>
+const instruments = [
+ {id:"dan-bau",name:"Đàn bầu",type:"Dây • độc huyền cầm",desc:"Nhạc cụ một dây đặc trưng của Việt Nam. Cao độ được tạo từ âm bồi kết hợp điều khiển cần đàn; đàn bầu có thể luyến và thay đổi cao độ liên tục.",how:"Bộ nút là các cao độ mẫu theo một thế âm Đô để dễ học. Khi chơi thật, người đàn bầu có thể uốn cần để luyến giữa các cao độ.",tags:["1 dây","âm bồi","luyến âm"],notes:["Đô3","Rê3","Mi3","Sol3","La3","Đô4","Rê4","Mi4"],freqs:[130.81,146.83,164.81,196,220,261.63,293.66,329.63],wave:"danbau"},
+ {id:"dan-tranh",name:"Đàn tranh",type:"Dây • gảy • ngũ cung",desc:"Đàn tranh có nhiều dây và cầu đàn di động. Cách lên dây cổ nhạc thường dựa trên thang âm ngũ cung; tay trái còn dùng để nhấn, rung và vuốt tạo sắc thái.",how:"Bộ nốt mô phỏng một thế ngũ cung kiểu Bắc ở giọng Sol: Sol–La–Đô–Rê–Mi, lặp lên quãng tám.",tags:["nhiều dây","ngũ cung","gảy"],notes:["Sol3","La3","Đô4","Rê4","Mi4","Sol4","La4","Đô5"],freqs:[196,220,261.63,293.66,329.63,392,440,523.25],wave:"dantranh"},
+ {id:"dan-nguyet",name:"Đàn nguyệt",type:"Dây • phím • ngũ cung",desc:"Đàn nguyệt có hai dây và cần đàn có phím. Hai dây có thể lên theo quãng 4 hoặc quãng 5 tùy hơi/điệu; hệ phím hỗ trợ các bậc âm ngũ cung.",how:"Bộ nốt mẫu dùng các bậc Đô–Rê–Mi–Sol–La, phù hợp để luyện nghe và gảy.",tags:["2 dây","phím","ngũ cung"],notes:["Đô3","Rê3","Mi3","Sol3","La3","Đô4","Rê4","Mi4"],freqs:[130.81,146.83,164.81,196,220,261.63,293.66,329.63],wave:"nguyet"},
+ {id:"sao-truc",name:"Sáo trúc",type:"Hơi • 6 lỗ",desc:"Sáo trúc 6 lỗ có nhiều tone khác nhau. Ở đây dùng mẫu sáo Đô (C) để các nốt cơ bản dễ nhận biết; cây sáo thật có thể đổi tone.",how:"Mẫu cơ bản của sáo Đô: Đô–Rê–Mi–Fa–Sol–La–Si–Đô. Âm cao còn phụ thuộc hơi và kỹ thuật thổi.",tags:["tre/trúc","6 lỗ","thổi"],notes:["Đô4","Rê4","Mi4","Fa4","Sol4","La4","Si4","Đô5"],freqs:[261.63,293.66,329.63,349.23,392,440,493.88,523.25],wave:"sao"},
+ {id:"trong-co",name:"Trống cơm",type:"Gõ • màng • tiết tấu",desc:"Trống cơm là nhạc cụ gõ có hai mặt da. Nó không phải nhạc cụ định cao độ theo hệ Đô–Rê–Mi; các nút vì vậy là các âm tiết tấu.",how:"Nhấn các nút để luyện mẫu tiếng gõ. Tên nút là âm tiết tấu thay vì nốt cao độ.",tags:["gõ","màng da","tiết tấu"],notes:["Tùng","Cắc","Bùng","Tắc","Tùng","Cắc","Bùng","Tắc"],freqs:[105,180,82,210,115,195,90,225],wave:"trong"},
+ {id:"t-rung",name:"Đàn T'rưng",type:"Gõ • ống tre • ngũ cung",desc:"Đàn T'rưng gồm các ống tre có cao độ khác nhau, được gõ bằng dùi. Bộ nốt trong trang dùng một dãy ngũ cung để phản ánh màu âm thường gặp trong hòa tấu.",how:"Bộ nốt mẫu: Sol–La–Đô–Rê–Mi, sau đó lặp lên quãng tám.",tags:["ống tre","gõ","ngũ cung"],notes:["Sol3","La3","Đô4","Rê4","Mi4","Sol4","La4","Đô5"],freqs:[196,220,261.63,293.66,329.63,392,440,523.25],wave:"trung"},
+ {id:"dan-nhi",name:"Đàn nhị",type:"Dây • kéo",desc:"Đàn nhị là nhạc cụ hai dây dùng cung kéo, có âm thanh mềm và giàu khả năng luyến. Đây là nhạc cụ quan trọng trong nhiều dàn nhạc truyền thống.",how:"Bộ phím mô phỏng dùng các cao độ mẫu. Hãy tưởng tượng tay trái bấm dây và tay phải kéo cung liên tục.",tags:["2 dây","kéo cung","luyến"],notes:["Đô4","Rê4","Mi4","Sol4","La4","Đô5","Rê5","Mi5"],freqs:[261.63,293.66,329.63,392,440,523.25,587.33,659.25],wave:"nhi"},
+ {id:"dan-ty-ba",name:"Đàn tỳ bà",type:"Dây • gảy • 4 dây",desc:"Đàn tỳ bà có thân hình quả lê, bốn dây và phím. Âm thanh rõ, sáng; kỹ thuật gảy và rung tạo nhiều sắc thái.",how:"Chọn từng bậc âm để luyện câu giai điệu. Bộ nốt là một mẫu C–F–G–C mở rộng để dễ học trên bàn phím.",tags:["4 dây","phím","gảy"],notes:["Đô4","Fa4","Sol4","Đô5","Rê5","Mi5","Fa5","Sol5"],freqs:[261.63,349.23,392,523.25,587.33,659.25,698.46,783.99],wave:"tyba"},
+ {id:"dan-day",name:"Đàn đáy",type:"Dây • gảy • 3 dây",desc:"Đàn đáy là nhạc cụ dây cần dài, thùng hình thang, gắn bó đặc biệt với nghệ thuật ca trù.",how:"Bấm các nốt mẫu để tạo câu nhạc. Bộ nốt dùng các cao độ quanh G–C và mở rộng lên quãng trên.",tags:["3 dây","ca trù","gảy"],notes:["Sol3","La3","Đô4","Rê4","Mi4","Sol4","La4","Đô5"],freqs:[196,220,261.63,293.66,329.63,392,440,523.25],wave:"day"},
+ {id:"kheng",name:"Khèn",type:"Hơi • nhiều ống",desc:"Khèn là nhạc cụ hơi có nhiều ống gắn với bầu/hộp cộng hưởng, xuất hiện trong văn hóa của nhiều cộng đồng dân tộc, trong đó có người H'Mông.",how:"Các nút tượng trưng cho các tổ hợp cao độ. Khi chơi thật, hơi thổi và ngón tay điều khiển lưỡi gà trong từng ống.",tags:["nhiều ống","dăm/lưỡi gà","H'Mông"],notes:["Sol3","La3","Đô4","Rê4","Mi4","Sol4","La4","Đô5"],freqs:[196,220,261.63,293.66,329.63,392,440,523.25],wave:"kheng"},
+];
+
+let current=0, audioCtx=null, master=null;
+const $=s=>document.querySelector(s);
+function ensureAudio(){
+ if(!audioCtx){
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  master=audioCtx.createGain(); master.gain.value=parseFloat($("#volume").value); master.connect(audioCtx.destination);
+ }
+ if(audioCtx.state==="suspended") audioCtx.resume();
+}
+$("#volume").addEventListener("input",()=>{if(master)master.gain.value=parseFloat($("#volume").value)});
+
+function svgFor(inst){
+ const common=`<defs><linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b87345"/><stop offset=".5" stop-color="#7d3e27"/><stop offset="1" stop-color="#c98950"/></linearGradient><linearGradient id="lightwood"><stop stop-color="#d49a5b"/><stop offset="1" stop-color="#8d4d2e"/></linearGradient></defs>`;
+ if(inst.id==="dan-tranh") return `<svg viewBox="0 0 900 360">${common}<path d="M90 120 Q450 45 810 120 L780 260 Q450 315 120 260Z" fill="url(#wood)" stroke="#542b20" stroke-width="8"/><g stroke="#f0d8a5" stroke-width="2">${Array.from({length:8},(_,i)=>`<path d="M${145+i*88} 105 Q${450} 180 ${755-i*88} 275"/>`).join("")}</g><g fill="#e6c982">${Array.from({length:8},(_,i)=>`<rect x="${155+i*82}" y="145" width="8" height="90" rx="4"/>`).join("")}</g><text x="450" y="55" text-anchor="middle" fill="#fff2ce" font-size="20" font-weight="800">ĐÀN TRANH • NHÌN TỪ TRÊN XUỐNG</text></svg>`;
+ if(inst.id==="dan-bau") return `<svg viewBox="0 0 900 360">${common}<rect x="105" y="130" width="690" height="100" rx="50" fill="url(#wood)" stroke="#542b20" stroke-width="8"/><ellipse cx="165" cy="180" rx="60" ry="48" fill="#d39a58" stroke="#542b20" stroke-width="7"/><path d="M140 180 Q450 90 760 180 Q450 270 140 180" fill="none" stroke="#f4d99e" stroke-width="5"/><path d="M165 180 Q450 116 735 180" fill="none" stroke="#fff1c7" stroke-width="3"/><path d="M690 115 Q720 65 760 110" fill="none" stroke="#6b3b25" stroke-width="14"/><circle cx="760" cy="110" r="13" fill="#d5aa5d"/><text x="450" y="310" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN BẦU • 1 DÂY</text></svg>`;
+ if(inst.id==="dan-nguyet") return `<svg viewBox="0 0 900 360">${common}<rect x="425" y="55" width="50" height="230" rx="22" fill="url(#wood)" stroke="#542b20" stroke-width="7"/><circle cx="450" cy="215" r="92" fill="url(#wood)" stroke="#542b20" stroke-width="9"/><circle cx="450" cy="215" r="62" fill="#5e2d22"/><circle cx="450" cy="215" r="46" fill="#a65e38"/><path d="M450 68V190M450 240V280" stroke="#f1d49a" stroke-width="4"/><g stroke="#e8c685" stroke-width="5">${[90,110,130,150,170].map(y=>`<path d="M430 ${y}h40"/>`).join("")}</g><text x="450" y="335" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN NGUYỆT • THÙNG TRÒN</text></svg>`;
+ if(inst.id==="sao-truc") return `<svg viewBox="0 0 900 360">${common}<g transform="rotate(-8 450 180)"><rect x="95" y="150" width="710" height="62" rx="30" fill="#9b6b32" stroke="#4f321e" stroke-width="8"/><rect x="120" y="158" width="660" height="18" rx="9" fill="#d8b86f" opacity=".7"/>${[220,290,360,430,500,570,640,710].map(x=>`<circle cx="${x}" cy="180" r="14" fill="#3e2a1e"/><circle cx="${x}" cy="177" r="5" fill="#c99b55"/>`).join("")}<path d="M105 145v75M795 145v75" stroke="#e6c785" stroke-width="8"/></g><text x="450" y="315" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">SÁO TRÚC • 8 LỖ</text></svg>`;
+ if(inst.id==="trong-co") return `<svg viewBox="0 0 900 360">${common}<path d="M245 85 Q450 55 655 85 L600 275 Q450 305 300 275Z" fill="url(#wood)" stroke="#542b20" stroke-width="9"/><ellipse cx="450" cy="88" rx="205" ry="50" fill="#e8cfa1" stroke="#542b20" stroke-width="9"/><ellipse cx="450" cy="272" rx="150" ry="34" fill="#e0c596" stroke="#542b20" stroke-width="8"/><path d="M285 105L335 270M615 105L565 270M330 100L370 282M570 100L530 282" stroke="#5d3324" stroke-width="8"/><text x="450" y="330" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">TRỐNG CƠM • GÕ</text></svg>`;
+ if(inst.id==="dan-nhi") return `<svg viewBox="0 0 900 360">${common}<rect x="430" y="45" width="40" height="245" rx="18" fill="url(#wood)" stroke="#542b20" stroke-width="7"/><path d="M390 280 Q450 230 510 280 L500 315 Q450 335 400 315Z" fill="#8b4e2f" stroke="#542b20" stroke-width="7"/><path d="M440 70Q410 170 440 275M460 70Q490 170 460 275" stroke="#e8cf94" stroke-width="3"/><path d="M390 280Q450 245 510 280" stroke="#f0d8a5" stroke-width="5"/><text x="450" y="345" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN NHỊ • 2 DÂY</text></svg>`;
+ if(inst.id==="dan-ty-ba") return `<svg viewBox="0 0 900 360">${common}<path d="M450 55 C520 55 575 105 545 175 C530 210 535 255 485 285 C450 305 415 305 380 285 C330 255 335 210 320 175 C290 105 380 55 450 55Z" fill="url(#wood)" stroke="#542b20" stroke-width="8"/><rect x="425" y="45" width="50" height="150" rx="18" fill="#784026" stroke="#542b20" stroke-width="7"/><path d="M390 75L510 265M415 65L535 245M385 95L505 275M410 85L530 255" stroke="#f0d7a0" stroke-width="3"/><text x="450" y="335" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN TỲ BÀ • 4 DÂY</text></svg>`;
+ if(inst.id==="dan-day") return `<svg viewBox="0 0 900 360">${common}<path d="M260 105 L640 105 L570 285 L330 285Z" fill="url(#wood)" stroke="#542b20" stroke-width="9"/><rect x="425" y="35" width="50" height="105" rx="15" fill="#794126" stroke="#542b20" stroke-width="7"/><path d="M390 55L390 260M450 45L450 270M510 55L510 260" stroke="#f1d8a2" stroke-width="3"/><text x="450" y="330" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN ĐÁY • CA TRÙ</text></svg>`;
+ if(inst.id==="tam-thap-luc") return `<svg viewBox="0 0 900 360">${common}<path d="M140 85 L760 85 L680 290 L220 290Z" fill="url(#wood)" stroke="#542b20" stroke-width="8"/>${Array.from({length:12},(_,i)=>`<line x1="${200+i*45}" y1="100" x2="${250+i*38}" y2="275" stroke="#f2d89c" stroke-width="3"/>`).join("")}<text x="450" y="330" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN TAM THẬP LỤC • DÂY GÕ</text></svg>`;
+ if(inst.id==="dan-da") return `<svg viewBox="0 0 900 360">${common}${Array.from({length:8},(_,i)=>{let x=90+i*100,w=76,h=65+i*12;return `<rect x="${x}" y="${190-h/2}" width="${w}" height="${h}" rx="18" fill="#8d887a" stroke="#4d493f" stroke-width="7"/><path d="M${x+12} ${190-h/2+12}L${x+w-12} ${190-h/2+12}" stroke="#d7d0bc" stroke-width="3"/>`}).join("")}<text x="450" y="325" text-anchor="middle" fill="#5f594d" font-size="20" font-weight="800">ĐÀN ĐÁ • THANH ĐÁ</text></svg>`;
+ if(inst.id==="kheng") return `<svg viewBox="0 0 900 360">${common}<ellipse cx="450" cy="225" rx="110" ry="80" fill="url(#wood)" stroke="#542b20" stroke-width="8"/>${Array.from({length:8},(_,i)=>`<rect x="${250+i*58}" y="70" width="35" height="155" rx="16" fill="#a9783e" stroke="#593522" stroke-width="6" transform="rotate(${(i-3.5)*2}  ${267+i*58} 145)"/>`).join("")}<text x="450" y="335" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">KHÈN • NHIỀU ỐNG</text></svg>`;
+ if(inst.id==="ken-bau") return `<svg viewBox="0 0 900 360">${common}<rect x="170" y="145" width="510" height="55" rx="26" fill="url(#wood)" stroke="#542b20" stroke-width="8"/><path d="M680 125 L790 160 L790 185 L680 215Z" fill="#a76b3b" stroke="#542b20" stroke-width="7"/><rect x="110" y="158" width="80" height="30" rx="12" fill="#4c3025"/><path d="M300 138V207M380 138V207M460 138V207M540 138V207M620 138V207" stroke="#e6c685" stroke-width="5"/><text x="450" y="315" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">KÈN BẦU • DĂM KÉP</text></svg>`;
+ if(inst.id==="tieu") return `<svg viewBox="0 0 900 360">${common}<rect x="400" y="55" width="100" height="250" rx="42" fill="#9b6b32" stroke="#4f321e" stroke-width="8"/><ellipse cx="450" cy="55" rx="50" ry="18" fill="#d4b16a" stroke="#4f321e" stroke-width="6"/>${[105,145,185,225,265].map(y=>`<circle cx="430" cy="${y}" r="10" fill="#39291e"/><circle cx="470" cy="${y}" r="10" fill="#39291e"/>`).join("")}<text x="450" y="335" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">TIÊU • SÁO DỌC</text></svg>`;
+ if(inst.id==="song-loan") return `<svg viewBox="0 0 900 360">${common}<ellipse cx="450" cy="185" rx="160" ry="85" fill="url(#wood)" stroke="#542b20" stroke-width="9"/><circle cx="450" cy="185" r="48" fill="#e3c17d" stroke="#542b20" stroke-width="7"/><path d="M350 135Q450 110 550 135M350 235Q450 260 550 235" fill="none" stroke="#f0d39a" stroke-width="5"/><text x="450" y="330" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">SONG LOAN • GIỮ NHỊP</text></svg>`;
+ return `<svg viewBox="0 0 900 360">${common}<g transform="translate(90 35)">${Array.from({length:8},(_,i)=>{let x=i*95,y=230-i*15,w=66,h=120+i*12;return `<g><rect x="${x}" y="${y-h/2}" width="${w}" height="${h}" rx="25" fill="url(#lightwood)" stroke="#593021" stroke-width="7"/><ellipse cx="${x+w/2}" cy="${y-h/2+4}" rx="${w/2-5}" ry="13" fill="#e4c78f"/><line x1="${x+12}" y1="${y-h/2+22}" x2="${x+w-12}" y2="${y-h/2+22}" stroke="#6c3b27" stroke-width="3"/></g>`}).join("")}</g><text x="450" y="345" text-anchor="middle" fill="#6b4930" font-size="20" font-weight="800">ĐÀN T'RƯNG • ỐNG TRE</text></svg>`;
+}
+
+
+const lessons={
+ "dan-bau":["Ngồi/đứng ổn định, đặt đàn ngang trước người.","Gảy dây bằng que/móng gảy.","Tay trái điều khiển cần để thay đổi cao độ và tạo luyến.","Luyện chậm các bậc Đô–Rê–Mi–Sol–La rồi tăng tốc."],
+ "dan-tranh":["Đặt đàn ngang, tay phải gảy dây.","Tay trái nhấn sau cầu để tạo rung/luyến.","Luyện thang ngũ cung Sol–La–Đô–Rê–Mi.","Bắt đầu với bài mẫu đơn giản rồi ghép nhịp."],
+ "dan-nguyet":["Giữ đàn chắc bằng tư thế thoải mái.","Tay phải gảy, tay trái bấm phím.","Luyện từng bậc âm rồi thêm rung/nhấn.","Nghe độ ngân trước khi chuyển nốt."],
+ "sao-truc":["Giữ sáo ngang, môi đặt đúng vị trí lỗ thổi.","Dùng ngón che/mở các lỗ.","Thổi đều và nhẹ trước khi tăng lực hơi.","Luyện 8 nốt từ Đô4 đến Đô5."],
+ "trong-co":["Giữ trống chắc và chọn mặt gõ.","Luyện Tùng–Cắc chậm với metronome tưởng tượng.","Thay đổi lực tay để tạo tương phản.","Không gọi âm gõ là cao độ Đô–Rê–Mi."],
+ "t-rung":["Dùng dùi gõ vào phần phát âm của ống.","Bắt đầu từ Sol3–La3–Đô4–Rê4–Mi4.","Gõ nhẹ để nghe độ ngân.","Ghép các ống thành câu 5 nốt."],
+ "dan-nhi":["Giữ cần đàn thẳng, cung nằm giữa hai dây.","Tay trái bấm cao độ trên dây.","Kéo cung đều và dùng rung nhẹ.","Luyện chuyển chậm giữa Đô4–Rê4–Mi4–Sol4."],
+ "dan-ty-ba":["Giữ thân đàn ổn định.","Tay phải gảy bằng móng/gảy; tay trái bấm phím.","Luyện các nốt theo nhóm 4–5 âm.","Tăng tốc sau khi tiếng gảy rõ."],
+ "dan-day":["Đặt đàn theo tư thế phù hợp với ca trù.","Tay phải gảy dây, tay trái bấm.","Luyện các bậc Sol–La–Đô–Rê–Mi.","Sau đó thử bài mẫu nhịp chậm."],
+ "tam-thap-luc":["Đặt đàn ổn định trước người.","Cầm hai que nhỏ và gõ gần khu vực dây phát âm.","Luyện từng cao độ rồi xen kẽ hai tay.","Tăng dần tốc độ khi tiếng gõ đều."],
+ "dan-da":["Đặt các thanh đá ổn định.","Dùng dùi gõ nhẹ vào vùng phát âm.","Để âm ngân tự nhiên trước khi gõ nốt tiếp.","Luyện chuỗi 5 nốt ngũ cung."],
+ "kheng":["Đặt khèn đúng tư thế và giữ kín miệng với ống thổi.","Điều khiển hơi đều.","Các ngón điều khiển lỗ/ống theo loại khèn.","Bắt đầu bằng những tổ hợp âm ngắn."],
+ "ken-bau":["Đặt dăm kép đúng vị trí miệng.","Thổi đều, không ép hơi quá mạnh.","Ngón tay mở/đóng lỗ để đổi cao độ.","Luyện từng nốt trước khi chạy gam."],
+ "tieu":["Giữ tiêu thẳng và ổn định.","Thổi qua lỗ miệng, dùng ngón che/mở lỗ.","Giữ hơi dài và đều.","Luyện Đô3–Rê3–Mi3 rồi mở rộng."],
+ "song-loan":["Cầm song loan chắc bằng tay.","Gõ đều vào thân/điểm phát âm.","Tập mẫu Cốc–Cốc–Nghỉ.","Sau đó ghép với tiết tấu trống cơm."]
+};
+const sampleSongs={
+ "dan-bau":[{name:"Lý cây xanh — luyện 5 nốt",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:540},{name:"Bắc kim thang — câu ngắn",notes:[0,2,1,3,2,4,3,2,1,0],tempo:560},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:520},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:530},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:520}],
+ "dan-tranh":[{name:"Lý cây xanh — luyện 5 nốt",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:500},{name:"Bắc kim thang — câu ngắn",notes:[0,2,1,3,2,4,3,2,1,0],tempo:520},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:500},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:510},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:500}],
+ "dan-nguyet":[{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:520},{name:"Bắc kim thang — chậm",notes:[0,2,1,3,2,4,3,2,1,0],tempo:560},{name:"Lý cây xanh — luyện 5 nốt",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:520},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:520},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:520}],
+ "sao-truc":[{name:"Lý cây xanh — thổi từng câu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:620},{name:"Bắc kim thang — câu ngắn",notes:[0,2,1,3,2,4,3,2,1,0],tempo:600},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:610},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:610},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:600}],
+ "kheng":[{name:"Lý cây xanh — câu khèn đơn",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:600},{name:"Bắc kim thang — ngũ cung",notes:[0,2,1,3,2,4,3,2,1,0],tempo:620},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:620},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:620},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:610}],
+ "t-rung":[{name:"Lý cây xanh — gõ chậm",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:580},{name:"Bắc kim thang — câu ngắn",notes:[0,2,1,3,2,4,3,2,1,0],tempo:600},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:580},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:590},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:580}],
+ "dan-nhi":[{name:"Lý cây xanh — kéo cung chậm",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:650},{name:"Bắc kim thang — câu ngắn",notes:[0,2,1,3,2,4,3,2,1,0],tempo:670},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:650},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:660},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:650}],
+ "dan-ty-ba":[{name:"Bắc kim thang — câu ngắn",notes:[0,1,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:520},{name:"Lý cây xanh — gảy từng nốt",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:540},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:520},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:530},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:520}],
+ "dan-day":[{name:"Câu ca trù nhập môn",notes:[0,1,2,3,4,3,2,0],tempo:680},{name:"Luyện ngũ cung chậm",notes:[0,1,2,3,4,3,2,1,0],tempo:650},{name:"Lý kéo chài — câu ngắn",notes:[0,2,3,4,3,2,1,0,1,2,3,2,1,0],tempo:660},{name:"Lý ngựa ô — câu ngắn",notes:[0,1,2,4,3,2,1,0,1,2,3,4,2,1,0],tempo:670},{name:"Trống cơm — giai điệu mẫu",notes:[0,1,2,3,2,1,0,2,3,4,3,2,1,0],tempo:650}],
+ "trong-co":[{name:"Trống cơm — Tùng Cắc cơ bản",notes:[0,1,0,1,0,1,0,1],tempo:420},{name:"Trống cơm — nhịp 4 tiếng",notes:[0,1,1,0,0,1,0,1],tempo:390},{name:"Lý cây xanh — giữ nhịp",notes:[0,1,0,1,0,1,0,1,0,1,0,1],tempo:360},{name:"Bắc kim thang — giữ nhịp",notes:[0,1,0,0,1,0,1,0,1,0,1,0],tempo:360},{name:"Lý kéo chài — giữ nhịp",notes:[0,1,0,1,1,0,1,0,1,0,1,0],tempo:350}]
+};
+
+function render(){
+ const inst=instruments[current];
+ $("#title").textContent=inst.name;
+ $("#description").textContent=inst.desc;
+ $("#how").textContent=inst.how;
+ $("#tags").innerHTML=inst.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+ $("#art").innerHTML=svgFor(inst);
+ $("#caption").textContent=`${inst.type} — ${inst.name}`;
+ $("#selector").innerHTML=instruments.map((x,i)=>`<button class="${i===current?"active":""}" data-i="${i}">${x.name}</button>`).join("");
+ $("#selector").querySelectorAll("button").forEach(b=>b.onclick=()=>{current=+b.dataset.i;render()});
+ $("#keys").innerHTML=inst.notes.map((n,i)=>`<button class="key" data-note="${i}"><span class="num">${i+1}</span><span class="note">${n}</span><span class="kbd">${i+1}</span></button>`).join("");
+ $("#keys").querySelectorAll(".key").forEach((b,i)=>{
+   b.addEventListener("pointerdown",e=>{e.preventDefault();pressKey(i,b)});
+ });
+ $("#guideIntro").textContent=`Hướng dẫn thực hành ${inst.name}:`;
+ $("#guideList").innerHTML=lessons[inst.id].map(x=>`<li>${x}</li>`).join("");
+ $("#songList").innerHTML=sampleSongs[inst.id].map((song,i)=>`<div class="song"><div class="song-info"><div class="song-title">${song.name}</div><div class="song-note">${song.notes.map(n=>inst.notes[n]).join(" • ")}</div></div><button type="button" data-song="${i}">▶ Nghe thử</button></div>`).join("");
+ $("#songList").querySelectorAll("button").forEach(b=>b.onclick=()=>playSample(instruments[current],sampleSongs[instruments[current].id][+b.dataset.song]));
+}
+function pressKey(i,el, inst=instruments[current]){
+ el.classList.add("down"); setTimeout(()=>el.classList.remove("down"),90);
+ playTone(inst,i);
+}
+function playTone(inst,i){
+ ensureAudio();
+ if(audioCtx.state==='suspended') audioCtx.resume();
+ const now=audioCtx.currentTime, f=inst.freqs[i%inst.freqs.length];
+ const masterGain=audioCtx.createGain();
+ const pan=audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+ const out=pan||masterGain;
+ const connectOut=()=>{if(pan)pan.connect(masterGain);masterGain.connect(master)};
+ connectOut();
+ if(pan) pan.pan.value=((i%3)-1)*0.06;
+ const tone=(type,mul,level,detune=0)=>{
+   const o=audioCtx.createOscillator(); o.type=type; o.frequency.value=f*mul; o.detune.value=detune;
+   const g=audioCtx.createGain(); g.gain.value=level; o.connect(g).connect(out); return o;
+ };
+ const noise=(duration,level,filterFreq)=>{
+   const len=Math.max(1,Math.floor(audioCtx.sampleRate*duration)),buf=audioCtx.createBuffer(1,len,audioCtx.sampleRate),d=buf.getChannelData(0);
+   for(let k=0;k<len;k++) d[k]=(Math.random()*2-1)*Math.pow(1-k/len,1.6);
+   const n=audioCtx.createBufferSource(),g=audioCtx.createGain(),flt=audioCtx.createBiquadFilter(); n.buffer=buf; flt.type='bandpass'; flt.frequency.value=filterFreq; flt.Q.value=.7; g.gain.value=level; n.connect(flt).connect(g).connect(out); return n;
+ };
+ const stopAt=(nodes,end)=>nodes.forEach(o=>{o.start(now);o.stop(now+end)});
+ let end=.9;
+ if(inst.wave==='trong'){
+   end=.34; const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='sine'; o.frequency.setValueAtTime(f,now); o.frequency.exponentialRampToValueAtTime(Math.max(55,f*.55),now+.22);
+   g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.24,now+.006);g.gain.exponentialRampToValueAtTime(.0001,now+.30);o.connect(g).connect(out);o.start(now);o.stop(now+end);
+   const n=noise(.055,.12,1700);n.start(now);n.stop(now+.055); return;
+ }
+ if(inst.wave==='sao'){
+   end=1.15; const g=audioCtx.createGain();g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.14,now+.055);g.gain.setValueAtTime(.105,now+.35);g.gain.exponentialRampToValueAtTime(.0001,now+end);
+   const o1=tone('sine',1,.95),o2=tone('sine',2,.16),o3=tone('triangle',3,.035);[o1,o2,o3].forEach(o=>o.connect(g));
+   const vib=audioCtx.createOscillator(),vg=audioCtx.createGain();vib.frequency.value=5.2;vg.gain.value=3.2;vib.connect(vg).connect(o1.detune);
+   const br=noise(.20,.035,2400);br.connect(g);stopAt([o1,o2,o3,vib],end);br.start(now);br.stop(now+.20);return;
+ }
+ const profiles={
+  danbau:{types:['sine','triangle','sine','sine'],partials:[1,2,3,4],levels:[.72,.18,.07,.035],attack:.012,tail:1.45,body:3100,vibrato:4.7,vibDepth:5.5},
+  dantranh:{types:['triangle','sine','sine','sine'],partials:[1,2,3.01,4.02],levels:[.62,.20,.09,.04],attack:.004,tail:1.25,body:4300,vibrato:0,vibDepth:0},
+  nguyet:{types:['triangle','sine','square','sine'],partials:[1,2,3,4],levels:[.68,.17,.055,.025],attack:.006,tail:1.05,body:3600,vibrato:5.0,vibDepth:2.5},
+  trung:{types:['sine','triangle','sine'],partials:[1,2.67,4.05],levels:[.72,.17,.055],attack:.003,tail:.78,body:2600,vibrato:0,vibDepth:0},
+  nhi:{types:['sawtooth','sine','sine','triangle'],partials:[1,2,3,4],levels:[.46,.20,.09,.035],attack:.09,tail:1.65,body:3000,vibrato:5.4,vibDepth:13},
+  tyba:{types:['triangle','sine','sine','sine','triangle'],partials:[1,2,3,4,5],levels:[.56,.21,.10,.045,.02],attack:.003,tail:1.0,body:4700,vibrato:0,vibDepth:0},
+  day:{types:['triangle','sine','sine','sine'],partials:[1,2,3,4],levels:[.58,.19,.08,.03],attack:.008,tail:1.25,body:3400,vibrato:3.8,vibDepth:2},
+  kheng:{types:['square','sawtooth','sine','sine','triangle'],partials:[1,2,3,4,5],levels:[.40,.17,.10,.055,.025],attack:.035,tail:1.4,body:3900,vibrato:4.2,vibDepth:4.5}
+ };
+ const p=profiles[inst.wave]; if(!p)return;
+ const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=p.body;filter.Q.value=.55;filter.connect(out);
+ const g=audioCtx.createGain();g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.17,now+p.attack);g.gain.exponentialRampToValueAtTime(.055,now+p.attack+.22);g.gain.exponentialRampToValueAtTime(.0001,now+p.tail);g.connect(filter);
+ const os=[]; p.partials.forEach((mul,j)=>{const o=audioCtx.createOscillator();o.type=p.types[j]||'sine';o.frequency.value=f*mul;o.detune.value=j===0?0:(j%2?1.5:-1.5);o.connect(g);os.push(o)});
+ if(p.vibrato){const vib=audioCtx.createOscillator(),vg=audioCtx.createGain();vib.frequency.value=p.vibrato;vg.gain.value=p.vibDepth;vib.connect(vg);os.forEach(o=>vg.connect(o.detune));os.push(vib);}
+ os.forEach(o=>{o.start(now);o.stop(now+p.tail+.05)});
+ if(['dantranh','tyba','day'].includes(inst.wave)){const pick=noise(.028,.028,5200);pick.start(now);pick.stop(now+.028)}
+ if(inst.wave==='kheng'){const br=noise(.10,.018,1800);br.start(now);br.stop(now+.10)}
+}
+
+document.addEventListener("keydown",e=>{
+ if(e.repeat)return;
+ const n=parseInt(e.key,10);
+ if(n>=1&&n<=8){
+  if($("#mini").classList.contains("open")){ gameChoose(n-1); }
+  else { const btn=$("#keys").querySelectorAll(".key")[n-1]; if(btn)pressKey(n-1,btn); }
+ }
+});
+let sampleTimer=null;
+function playSample(inst,song){
+ if(sampleTimer){clearTimeout(sampleTimer);sampleTimer=null}
+ ensureAudio(); let i=0;
+ $("#nowPlaying").textContent=`▶ Đang phát: ${song.name}`;
+ const step=()=>{if(i>=song.notes.length){$("#nowPlaying").textContent=`✓ Đã phát xong: ${song.name}`;return} playTone(inst,song.notes[i]); i++; sampleTimer=setTimeout(step,song.tempo)};
+ step();
+}
+
+function toggleLearning(id){const panel=$("#"+id),btn=$(id==="guide"?"#guideToggle":"#songsToggle"),open=panel.hidden;["guide","songs"].forEach(x=>{const p=$("#"+x),b=$(x==="guide"?"#guideToggle":"#songsToggle");p.hidden=true;b.classList.remove("open");b.setAttribute("aria-expanded","false")});if(open){panel.hidden=false;btn.classList.add("open");btn.setAttribute("aria-expanded","true");panel.scrollIntoView({behavior:"smooth",block:"start"})}}
+$("#guideToggle").onclick=()=>toggleLearning("guide");
+$("#songsToggle").onclick=()=>toggleLearning("songs");
+document.querySelectorAll(".close-learning").forEach(b=>b.onclick=()=>{const id=b.dataset.close;$("#"+id).hidden=true;const t=$(id==="guide"?"#guideToggle":"#songsToggle");t.classList.remove("open");t.setAttribute("aria-expanded","false")});
+$("#miniLink").onclick=()=>{$("#mini").classList.add("open");$("#mini").scrollIntoView({behavior:"smooth",block:"start"})};
+$("#closeMini").onclick=()=>{$("#mini").classList.remove("open")};
+
+let game={inst:null,seq:[],pos:0,score:0,active:false};
+function renderGameKeys(){
+ const inst=game.inst;
+ $("#gameKeys").innerHTML=inst.notes.slice(0,5).map((n,i)=>`<button class="key" data-g="${i}"><span class="num">${i+1}</span><span class="note">${n}</span></button>`).join("");
+ $("#gameKeys").querySelectorAll(".key").forEach((b,i)=>b.addEventListener("pointerdown",e=>{e.preventDefault();gameChoose(i)}));
+}
+function showSeq(){
+ $("#sequence").innerHTML=game.seq.map((v,i)=>`<div class="seqbox ${i===game.pos?"current":""}" id="sq${i}">${v+1}</div>`).join("");
+}
+function startGame(){
+ const choices=instruments.slice().sort(()=>Math.random()-.5);
+ game.inst=choices[0]; game.seq=[];
+ for(let i=0;i<5;i++) game.seq.push(i);
+ game.seq.sort(()=>Math.random()-.5);
+ game.pos=0;game.score=0;game.active=true;
+ $("#gameInstrument").textContent=`Nhạc cụ: ${game.inst.name}`;
+ $("#gameArt").innerHTML=svgFor(game.inst);
+ $("#result").classList.remove("show");
+ $("#gameStatus").textContent="Hãy nghe chuỗi 5 nốt. Khi âm thanh bắt đầu, chọn đúng thứ tự.";
+ renderGameKeys();showSeq();
+ playSequence();
+}
+async function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+async function playSequence(){
+ ensureAudio();
+ for(let i=0;i<game.seq.length;i++){
+   $("#gameStatus").textContent=`Đang phát nốt ${i+1}/5…`;
+   document.querySelectorAll(".seqbox").forEach((x,j)=>x.classList.toggle("current",j===i));
+   playTone(game.inst,game.seq[i]);
+   await wait(650);
+ }
+ game.pos=0;showSeq();$("#gameStatus").textContent="Đến lượt bạn: chọn nốt kế tiếp theo đúng thứ tự vừa nghe.";
+}
+function gameChoose(i){
+ if(!game.active)return;
+ const boxes=$("#gameKeys").querySelectorAll(".key");
+ if(i===game.seq[game.pos]){
+   game.score+=2;boxes[i].classList.add("down");setTimeout(()=>boxes[i].classList.remove("down"),100);
+   document.querySelector(`#sq${game.pos}`).classList.add("correct");
+   game.pos++;
+   if(game.pos>=5){finishGame();return}
+   showSeq();
+   $("#gameStatus").textContent=`Đúng! Hãy chọn nốt thứ ${game.pos+1}.`;
+ }else{
+   boxes[i].classList.add("down");setTimeout(()=>boxes[i].classList.remove("down"),100);
+   $("#gameStatus").textContent="Chưa đúng — hãy nghe lại lượt này và tiếp tục chọn nốt đang được đánh dấu.";
+   document.querySelector(`#sq${game.pos}`).classList.add("wrong");
+   playTone(game.inst,game.seq[game.pos]);
+ }
+}
+function finishGame(){
+ game.active=false;
+ $("#score").textContent=`${game.score}/10`;
+ $("#resultText").textContent=game.score===10?"Hoàn thành chính xác cả 5 nốt!":`Bạn đã xác định đúng ${game.score/2} trên 5 nốt. Hãy chơi lượt mới để thử với một nhạc cụ khác.`;
+ $("#result").classList.add("show");
+ $("#gameStatus").textContent="Lượt chơi kết thúc.";
+}
+$("#startGame").onclick=startGame;
+render();
+</script>
+</body>
+</html>
